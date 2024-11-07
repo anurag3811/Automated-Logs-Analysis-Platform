@@ -213,7 +213,7 @@ const SejalDashboard = ({ logs }) => {
       </div>
 
       {/* Operation Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Total Uploads</h3>
           <p className="text-3xl font-bold text-blue-400">
@@ -221,12 +221,12 @@ const SejalDashboard = ({ logs }) => {
           </p>
         </div>
 
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
+        {/* <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Rename Operations</h3>
           <p className="text-3xl font-bold text-purple-400">
             <CountUp end={metrics.renames} duration={2} preserveValue={true} />
           </p>
-        </div>
+        </div> */}
 
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Files Renamed</h3>
@@ -253,7 +253,7 @@ const SejalDashboard = ({ logs }) => {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <div ref={el => chartRefs.current.storagePie = el} style={{width: "100%", height: "400px"}}></div>
         </div>

@@ -220,8 +220,43 @@ const SanchariDashboard = ({ logs }) => {
 
   return (
     <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg">
-      {/* KPI Cards */}
+      {/* Standard KPI Section */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="bg-gray-800 p-4 rounded-lg shadow">
+          <h3 className="text-xl font-bold mb-2">Project Name:</h3>
+          <p className="text-3xl font-bold text-white">Tax Management System</p>
+        </div>
+
+        <div className="bg-gray-800 p-4 rounded-lg shadow">
+          <h3 className="text-xl font-bold mb-2">Total Logs</h3>
+          <p className="text-3xl font-bold text-blue-400">
+            <CountUp end={totalLogs} duration={2} preserveValue={true} />
+          </p>
+        </div>
+
+        <div className="bg-gray-800 p-4 rounded-lg shadow">
+          <h3 className="text-xl font-bold mb-2">Error Logs</h3>
+          <p className="text-3xl font-bold text-red-400">
+            <CountUp end={totalErrorLogs} duration={2} preserveValue={true} />
+          </p>
+        </div>
+
+        <div className="bg-gray-800 p-4 rounded-lg shadow">
+          <h3 className="text-xl font-bold mb-2">Success Rate</h3>
+          <p className="text-3xl font-bold text-green-400">
+            <CountUp 
+              end={totalLogs > 0 ? ((totalLogs - totalErrorLogs) / totalLogs * 100) : 0} 
+              duration={2} 
+              preserveValue={true}
+              decimals={2}
+              suffix="%" 
+            />
+          </p>
+        </div>
+      </div>
+
+      {/* Existing KPI Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Total Calculations</h3>
           <p className="text-3xl font-bold text-blue-400">
@@ -243,21 +278,11 @@ const SanchariDashboard = ({ logs }) => {
           </p>
         </div>
 
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-bold mb-2">Success Rate</h3>
-          <p className="text-3xl font-bold text-yellow-400">
-            <CountUp 
-              end={((totalLogs - totalErrorLogs) / totalLogs) * 100} 
-              duration={2} 
-              decimals={1}
-              suffix="%" 
-            />
-          </p>
-        </div>
+
       </div>
 
-            {/* Charts Section */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 mb-6">
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6 mb-6">
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <div ref={el => chartRefs.current.regPieChart = el} style={{width: "100%", height: "400px"}}></div>
         </div>
@@ -268,8 +293,6 @@ const SanchariDashboard = ({ logs }) => {
           <div ref={el => chartRefs.current.slotBarChart = el} style={{width: "100%", height: "400px"}}></div>
         </div>
       </div>
-
-
 
       {/* Tax Calculation Metrics */}
       <h2 className="text-2xl font-bold mb-4">Tax Calculation Metrics</h2>
@@ -330,9 +353,8 @@ const SanchariDashboard = ({ logs }) => {
         </div>
       </div>
 
-
-          {/* Error Analysis */}
-          <h2 className="text-2xl font-bold mb-4 mt-4">Error Analysis</h2>
+      {/* Error Analysis */}
+      <h2 className="text-2xl font-bold mb-4 mt-4">Error Analysis</h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         {Object.entries(metrics.errors).map(([category, reasons]) => (
           <div key={category} className="bg-gray-800 p-4 rounded-lg shadow">
@@ -351,8 +373,6 @@ const SanchariDashboard = ({ logs }) => {
           </div>
         ))}
       </div>
-
-
     </div>
   );
 };
