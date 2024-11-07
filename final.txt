@@ -1,0 +1,54 @@
+1.Introduction
+1.1 Scope
+•	The project aims to develop a log analysis and KPI monitoring system that collects and analyzes logs from multiple projects, generates customizable Key Performance Indicators (KPIs), and provides proactive alerts to business stakeholders. This project acts as a framework that can easily accommodate new projects, with everything parameterized instead of hard-coded for each project, functioning like a platform.
+Objectives:
+o	Implement a robust log aggregation system from diverse sources.
+o	Develop a flexible KPI creation mechanism using user-defined formulas.
+o	Create customizable dashboards for KPI visualization.
+o	Develop a alerting system based on user-defined thresholds.
+Goals:
+o	Enhance visibility into project performance
+o	Improve decision-making through data-driven insights.
+o	Reduce response time to critical issues through proactive alerting
+o	Provide a unified platform for log analysis and KPI monitoring.
+o	Ensure the system is adaptable and scalable, allowing easy integration of new projects through parameterized configurations.
+
+1.2 Technology Stack
+Backend
+•	Language: Python (Flask)
+•	Database: 
+o	MongoDB & SQL Database 
+Log Collection: 
+•	Python's logging module for log collection
+Frontend
+•	Framework: React.js/Next.js, PowerBI
+Scheduled Tasks
+•	APScheduler for periodic log processing and KPI calculations
+Version Control
+•	Github
+
+1.3 Glossary or Terminology 
+// New terms you come across as you research your design or terms you may suspect your readers/stakeholders not to know
+
+1.4 High Level Design
+User Flow Diagram:
+ 
+KPI creation sequence diagram:
+ 
+High Level Design Diagram:
+ 
+1.5 Programming Standards
+// Programming standard used with few Code snippet
+
+1.6 Components
+//Components Description
+
+1.7 Pre-requisite
+// Any pre-requisite which user/stakeholder needs to know before going through the project
+
+1.8 User Guide
+//User manual to go through the project
+2.Testing
+2.1 Test Scenario(s)
+//Use Cases with Actual and Expected Results
+Note : Multiple test scenario is required

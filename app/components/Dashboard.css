@@ -1,0 +1,97 @@
+.scene {
+    /* width: 400px; */
+    /* height: 400px; */
+    perspective: 1200px;
+    position: relative;
+  }
+  
+  .scene * {
+    transform-style: preserve-3d;
+  }
+  
+  .cylinder {
+    position: relative;
+    /* background: rgba(209, 103, 77, 0.8); */
+    height: 100%;
+    width: 100%;
+  }
+  
+  .cylinder > div {
+    --cylinderWidth: 200px;
+    transform-origin: center;
+    position: absolute;
+    top: calc(50% - calc(calc(var(--cylinderWidth) * calc(1 / 15)) / 2));
+    left: calc(50% - calc(var(--cylinderWidth) / 2));
+    width: var(--cylinderWidth);
+    aspect-ratio: 15/1;
+    animation: rotate 1.5s linear infinite;
+  }
+  
+  .cylinder > div:nth-child(1) {
+    background-image: linear-gradient(90deg, transparent calc(0 * 8.3333%), white calc(0 * 8.3333%) calc(1 * 8.3333%), transparent calc(1 * 8.3333%));
+    transform: rotateX(calc(1 * 30deg)) translateZ(30px);
+  }
+  
+  .cylinder > div:nth-child(2) {
+    background-image: linear-gradient(90deg, transparent calc(1 * 8.3333%), white calc(1 * 8.3333%) calc(2 * 8.3333%), transparent calc(2 * 8.3333%));
+    transform: rotateX(calc(2 * 30deg)) translateZ(30px);
+  }
+  
+  .cylinder > div:nth-child(3) {
+    background-image: linear-gradient(90deg, transparent calc(2 * 8.3333%), white calc(2 * 8.3333%) calc(3 * 8.3333%), transparent calc(3 * 8.3333%));
+    transform: rotateX(calc(3 * 30deg)) translateZ(30px);
+  }
+  
+  .cylinder > div:nth-child(4) {
+    background-image: linear-gradient(90deg, transparent calc(3 * 8.3333%), white calc(3 * 8.3333%) calc(4 * 8.3333%), transparent calc(4 * 8.3333%));
+    transform: rotateX(calc(4 * 30deg)) translateZ(30px);
+  }
+  
+  .cylinder > div:nth-child(5) {
+    background-image: linear-gradient(90deg, transparent calc(4 * 8.3333%), white calc(4 * 8.3333%) calc(5 * 8.3333%), transparent calc(5 * 8.3333%));
+    transform: rotateX(calc(5 * 30deg)) translateZ(30px);
+  }
+  
+  .cylinder > div:nth-child(6) {
+    background-image: linear-gradient(90deg, transparent calc(5 * 8.3333%), white calc(5 * 8.3333%) calc(6 * 8.3333%), transparent calc(6 * 8.3333%));
+    transform: rotateX(calc(6 * 30deg)) translateZ(30px);
+  }
+  
+  .cylinder > div:nth-child(7) {
+    background-image: linear-gradient(90deg, transparent calc(6 * 8.3333%), white calc(6 * 8.3333%) calc(7 * 8.3333%), transparent calc(7 * 8.3333%));
+    transform: rotateX(calc(7 * 30deg)) translateZ(30px);
+  }
+  
+  .cylinder > div:nth-child(8) {
+    background-image: linear-gradient(90deg, transparent calc(7 * 8.3333%), white calc(7 * 8.3333%) calc(8 * 8.3333%), transparent calc(8 * 8.3333%));
+    transform: rotateX(calc(8 * 30deg)) translateZ(30px);
+  }
+  
+  .cylinder > div:nth-child(9) {
+    background-image: linear-gradient(90deg, transparent calc(8 * 8.3333%), white calc(8 * 8.3333%) calc(9 * 8.3333%), transparent calc(9 * 8.3333%));
+    transform: rotateX(calc(9 * 30deg)) translateZ(30px);
+  }
+  
+  .cylinder > div:nth-child(10) {
+    background-image: linear-gradient(90deg, transparent calc(9 * 8.3333%), white calc(9 * 8.3333%) calc(10 * 8.3333%), transparent calc(10 * 8.3333%));
+    transform: rotateX(calc(10 * 30deg)) translateZ(30px);
+  }
+  
+  .cylinder > div:nth-child(11) {
+    background-image: linear-gradient(90deg, transparent calc(10 * 8.3333%), white calc(10 * 8.3333%) calc(11 * 8.3333%), transparent calc(11 * 8.3333%));
+    transform: rotateX(calc(11 * 30deg)) translateZ(30px);
+  }
+  
+  .cylinder > div:nth-child(12) {
+    background-image: linear-gradient(90deg, transparent calc(11 * 8.3333%), white calc(11 * 8.3333%) calc(12 * 8.3333%), transparent calc(12 * 8.3333%));
+    transform: rotateX(calc(12 * 30deg)) translateZ(30px);
+  }
+  
+  @keyframes rotate {
+    from {
+      rotate: x 0deg;
+    }
+    to {
+      rotate: x 360deg;
+    }
+  }
