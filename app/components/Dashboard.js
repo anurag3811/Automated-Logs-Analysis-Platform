@@ -10,33 +10,26 @@ const Dashboard = ({ allLogs, timeFilters, isLiveMode, isLoading, setIsLoading }
   const [logFilter, setLogFilter] = useState('all'); // 'all', 'error', 'error-free'
   const [selectedProject, setSelectedProject] = useState('all');
 
-  // Wrapped filter change handlers
-  const handleLogFilterChange = (newFilter) => {
-    setIsLoading(true); // Use main loading state
-    setTimeout(() => {
-      setLogFilter(newFilter);
-      setIsLoading(false);
-    }, 100); // Small delay to ensure UI update
-  };
-
-  const handleProjectChange = (newProject) => {
-    setIsLoading(true); // Use main loading state
-    setTimeout(() => {
-      setSelectedProject(newProject);
-      setIsLoading(false);
-    }, 100); // Small delay to ensure UI update
-  };
-
-  // Filter logs based on selected filters
+  // Filter logs based on all filters (time, project, and log type)
   const getFilteredLogs = () => {
     return allLogs.filter(log => {
-      // First filter by project
+      // Time filter
+      if (!isLiveMode && timeFilters.startDate && timeFilters.endDate) {
+        const logTime = new Date(log.Timestamp);
+        const startTime = new Date(timeFilters.startDate + 'Z');
+        const endTime = new Date(timeFilters.endDate + 'Z');
+        
+        if (!(logTime >= startTime && logTime <= endTime)) {
+          return false;
+        }
+      }
 
+      // Project filter
       if (selectedProject !== 'all' && log.Username.toLowerCase() !== selectedProject) {
         return false;
       }
 
-      // Then filter by log type
+      // Log type filter
       switch(logFilter) {
         case 'error':
           return log.Values && log.Values.iserrorlog === 1;
@@ -46,6 +39,23 @@ const Dashboard = ({ allLogs, timeFilters, isLiveMode, isLoading, setIsLoading }
           return true;
       }
     });
+  };
+
+  // Add loading state for filters
+  const handleFilterChange = (callback) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      callback();
+      setIsLoading(false);
+    }, 100);
+  };
+
+  const handleLogFilterChange = (newFilter) => {
+    handleFilterChange(() => setLogFilter(newFilter));
+  };
+
+  const handleProjectChange = (newProject) => {
+    handleFilterChange(() => setSelectedProject(newProject));
   };
 
   const filteredLogs = getFilteredLogs();

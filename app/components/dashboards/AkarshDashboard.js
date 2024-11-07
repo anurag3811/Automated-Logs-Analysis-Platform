@@ -115,6 +115,7 @@ const AkarshDashboard = ({ logs }) => {
   }, []);
 
   // Update charts when data changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (charts.Plotly) {
       updateCharts();

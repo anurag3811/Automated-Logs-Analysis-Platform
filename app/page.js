@@ -6,9 +6,9 @@ import emailjs from '@emailjs/browser';
 
 // Email configuration
 const EMAIL_CONFIG = {
-  serviceId: "service_08wuxyp",
-  templateId: "template_iv1kocu",
-  publicKey: "KfOAAPs5YIj1aaa37"
+  serviceId: process.env.NEXT_PUBLIC_EMAIL_SERVICE_ID,
+  templateId: process.env.NEXT_PUBLIC_EMAIL_TEMPLATE_ID,
+  publicKey: process.env.NEXT_PUBLIC_EMAIL_PUBLIC_KEY
 };
 
 // Email mapping
@@ -109,7 +109,7 @@ export default function Home() {
         }
       }
     }
-  }, []); // Remove alertEngineData from dependencies
+  }, [alertEngineData]);
 
   const getServerTime = useCallback(async () => {
     try {
@@ -125,9 +125,7 @@ export default function Home() {
   const fetchInitialData = useCallback(async () => {
     try {
       const params = new URLSearchParams({
-        collection: 'all',
-        startDate: timeFilters.startDate,
-        endDate: timeFilters.endDate
+        collection: 'all'
       });
       const response = await fetch(`/api/logs?${params}`);
       if (!response.ok) throw new Error('Failed to fetch logs');
@@ -139,11 +137,9 @@ export default function Home() {
       console.error('Error:', error);
       setIsLoading(false);
     }
-  }, [timeFilters, processAlerts]);
+  }, [processAlerts]); // Remove timeFilters from dependencies
 
   const fetchIncrementalData = useCallback(async () => {
-    if (!isLiveMode) return;
-    
     try {
       const currentTime = await getServerTime();
       const startTime = new Date(currentTime.getTime() - 10000);
@@ -161,15 +157,17 @@ export default function Home() {
       if (newLogs.length > 0) {
         await processAlerts(newLogs, false);
         
-        setAllLogs(prevLogs => {
-          const combinedLogs = [...newLogs, ...prevLogs];
-          const uniqueLogs = Array.from(
-            new Map(combinedLogs.map(log => [log._id, log])).values()
-          );
-          return uniqueLogs.sort((a, b) => 
-            new Date(b.Timestamp) - new Date(a.Timestamp)
-          );
-        });
+        if (isLiveMode) {
+          setAllLogs(prevLogs => {
+            const combinedLogs = [...newLogs, ...prevLogs];
+            const uniqueLogs = Array.from(
+              new Map(combinedLogs.map(log => [log._id, log])).values()
+            );
+            return uniqueLogs.sort((a, b) => 
+              new Date(b.Timestamp) - new Date(a.Timestamp)
+            );
+          });
+        }
       }
     } catch (error) {
       console.error('Error:', error);
@@ -192,6 +190,7 @@ export default function Home() {
         setTimeFilters={setTimeFilters}
         isLiveMode={isLiveMode}
         setIsLiveMode={setIsLiveMode}
+        setIsLoading={setIsLoading}
       />
       <Dashboard 
         allLogs={allLogs}

@@ -166,7 +166,8 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
     });
   }, []);
 
-  // Update charts when data changes
+  // Update charts when data 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (charts.Plotly && chartData) {
       updateCharts();

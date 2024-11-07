@@ -1,7 +1,8 @@
 'use client';
 import React, { useRef, useState } from 'react';
 
-const TopBar = ({ timeFilters, setTimeFilters, isLiveMode, setIsLiveMode }) => {
+// eslint-disable-next-line react/display-name
+export default ({ timeFilters, setTimeFilters, isLiveMode, setIsLiveMode, setIsLoading }) => {
   const [activeRange, setActiveRange] = useState(null);
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
@@ -21,27 +22,38 @@ const TopBar = ({ timeFilters, setTimeFilters, isLiveMode, setIsLiveMode }) => {
     setIsLiveMode(!isLiveMode);
   };
 
+  const handleTimeFilterChange = (callback) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      callback();
+      setIsLoading(false);
+    }, 100);
+  };
+
   const handleQuickSelect = (range) => {
-    if (isLiveMode) return; // Prevent changes in live mode
+    if (isLiveMode) return;
     
-    setActiveRange(range);
-    const end = new Date();
-    let start = new Date();
-    
-    switch(range) {
-      case '1h': start.setHours(end.getHours() - 1); break;
-      case '6h': start.setHours(end.getHours() - 6); break;
-      case '24h': start.setHours(end.getHours() - 24); break;
-      case '7d': start.setDate(end.getDate() - 7); break;
-    }
-    
-    setTimeFilters({
-      startDate: start.toISOString().slice(0, 16),
-      endDate: end.toISOString().slice(0, 16)
+    handleTimeFilterChange(() => {
+      setActiveRange(range);
+      const end = new Date();
+      let start = new Date();
+      
+      switch(range) {
+        case '1h': start.setHours(end.getHours() - 1); break;
+        case '6h': start.setHours(end.getHours() - 6); break;
+        case '24h': start.setHours(end.getHours() - 24); break;
+        case '7d': start.setDate(end.getDate() - 7); break;
+      }
+      
+      const newTimeFilters = {
+        startDate: start.toISOString().slice(0, 16),
+        endDate: end.toISOString().slice(0, 16)
+      };
+      
+      setTimeFilters(newTimeFilters);
+      if (startDateRef.current) startDateRef.current.value = newTimeFilters.startDate;
+      if (endDateRef.current) endDateRef.current.value = newTimeFilters.endDate;
     });
-    
-    if (startDateRef.current) startDateRef.current.value = start.toISOString().slice(0, 16);
-    if (endDateRef.current) endDateRef.current.value = end.toISOString().slice(0, 16);
   };
 
   return (
@@ -133,5 +145,3 @@ const DateInput = React.forwardRef(({ label, onChange, disabled }, ref) => (
     />
   </div>
 ));
-
-export default TopBar;

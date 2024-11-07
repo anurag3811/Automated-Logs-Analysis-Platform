@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
+import CountUp from 'react-countup';
 
 // Define fixed colors for each failure parameter
 const failureColors = {
@@ -102,11 +103,15 @@ const PiyushDashboard = ({ logs }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Total Logs</h3>
-          <p className="text-3xl font-bold text-blue-400">{totalLogs}</p>
+          <p className="text-3xl font-bold text-blue-400">
+            <CountUp end={totalLogs} duration={2} preserveValue={true} />
+            </p>
         </div>
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Error Logs</h3>
-          <p className="text-3xl font-bold text-red-400">{totalErrorLogs}</p>
+          <p className="text-3xl font-bold text-red-400">
+            <CountUp end={totalErrorLogs} duration={2} preserveValue={true} />
+            </p>
         </div>
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Error Rate</h3>

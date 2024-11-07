@@ -177,7 +177,7 @@ const AdityaDashboard = ({ logs }) => {
       setCharts({ Plotly: Plotly.default });
     });
   }, []);
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (charts.Plotly) {
       updateCharts();

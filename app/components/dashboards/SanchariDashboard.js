@@ -88,7 +88,7 @@ const SanchariDashboard = ({ logs }) => {
       setCharts({ Plotly: plotly.default });
     });
   }, []);
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (charts.Plotly) {
       updateCharts();
