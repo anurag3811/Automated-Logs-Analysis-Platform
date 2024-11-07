@@ -96,6 +96,7 @@ const PiyushDashboard = ({ logs }) => {
     if (charts.Plotly) {
       updateCharts();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps 
   }, [charts.Plotly, failuresByParameter]);
 
   return (

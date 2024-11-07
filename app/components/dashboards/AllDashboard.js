@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState, useRef, useMemo } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import { getProjectName, projectDictionary } from '../../utils/projectDictionary';
 import CountUp from 'react-countup';
 
@@ -104,7 +104,7 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
     return { pieData, lineData, timeRange: [oldestLog, newestLog] };
   }, [filterLogs]);
 
-  const updateCharts = async () => {
+  const updateCharts = useCallback(async () => {
     if (!charts.Plotly || !chartData || isChartUpdating) return;
 
     setIsChartUpdating(true);
@@ -157,7 +157,7 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
     } finally {
       setIsChartUpdating(false);
     }
-  };
+  }, [charts, chartData, isChartUpdating, layout]);
 
   // Initialize Plotly
   useEffect(() => {
@@ -167,12 +167,13 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
   }, []);
 
   // Update charts when data 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   useEffect(() => {
     if (charts.Plotly && chartData) {
       updateCharts();
     }
-  }, [charts.Plotly, chartData]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps 
+  }, [charts.Plotly, chartData, updateCharts]);
 
   // Live mode updates
   useEffect(() => {
@@ -180,6 +181,7 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
       const interval = setInterval(updateCharts, 10000);
       return () => clearInterval(interval);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps 
   }, [isLiveMode, charts.Plotly, chartData]);
 
   const layout = {

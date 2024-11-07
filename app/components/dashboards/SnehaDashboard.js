@@ -185,11 +185,12 @@ const SnehaDashboard = ({ logs }) => {
       setCharts({ Plotly: Plotly.default });
     });
   }, []);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   useEffect(() => {
     if (charts.Plotly) {
       updateCharts();
     }
+// eslint-disable-next-line react-hooks/exhaustive-deps 
   }, [charts.Plotly, snehaLogs]);
 
   return (

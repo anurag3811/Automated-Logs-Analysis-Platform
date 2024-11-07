@@ -1,8 +1,7 @@
 'use client';
 import React, { useRef, useState } from 'react';
-
-// eslint-disable-next-line react/display-name
-export default ({ timeFilters, setTimeFilters, isLiveMode, setIsLiveMode, setIsLoading }) => {
+/* eslint-disable react/display-name */
+export default function TopBar({ timeFilters, setTimeFilters, isLiveMode, setIsLiveMode, setIsLoading }){
   const [activeRange, setActiveRange] = useState(null);
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
@@ -145,3 +144,4 @@ const DateInput = React.forwardRef(({ label, onChange, disabled }, ref) => (
     />
   </div>
 ));
+
