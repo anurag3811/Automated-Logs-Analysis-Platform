@@ -26,30 +26,54 @@ export async function GET(request) {
     };
 
     const fetchLogs = async (model) => {
-      let allLogs = await model.find().lean();
-      return allLogs.filter(log => {
-        if (!log.Timestamp) return false;
-        const logDate = new Date(log.Timestamp);
-        if (startDate && logDate < new Date(startDate)) return false;
-        if (endDate && logDate > new Date(endDate + 'T23:59:59.999Z')) return false;
-        return true;
-      });
+      const query = {};
+      if (startDate || endDate) {
+        query.Timestamp = {};
+        if (startDate) query.Timestamp.$gte = new Date(startDate);
+        if (endDate) query.Timestamp.$lte = new Date(endDate + 'T23:59:59.999Z');
+      }
+
+      // Fetch only latest 100 logs with proper sorting
+      return await model
+        .find(query)
+        .sort({ Timestamp: -1 })
+        .limit(100)
+        .lean();
     };
 
     if (collection === 'all') {
+      // Fetch logs from all collections
       logs = await Promise.all(allCollections.map(async (col) => {
         const model = getModel(col);
         return await fetchLogs(model);
       }));
-      logs = logs.flat();
+      
+      // Flatten the array and get the latest 100 logs across all collections
+      logs = logs
+        .flat()
+        .sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp))
+        .slice(0, 100);
     } else {
       const model = getModel(collection);
       logs = await fetchLogs(model);
     }
 
-    return new NextResponse(JSON.stringify(logs), { status: 200 });
+    return new NextResponse(JSON.stringify(logs), { 
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   } catch (error) {
     console.error("Error fetching logs:", error);
-    return new NextResponse(`Error fetching logs: ${error.message}`, { status: 500 });
+    return new NextResponse(JSON.stringify({
+      error: error.message,
+      details: error.stack
+    }), { 
+      status: 500,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
 }
