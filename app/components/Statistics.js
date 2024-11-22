@@ -96,7 +96,7 @@ const Statistics = ({ logs, collection, isLiveMode, lastUpdateTime }) => {
   };
 
   return (
-    <div className="w-full md:w-full pl-4 flex flex-col">
+    <div className="w-full md:w-full pl-4 flex flex-col -mt-4">
       <div ref={statisticsRef}>
         {renderDashboard()}
       </div>

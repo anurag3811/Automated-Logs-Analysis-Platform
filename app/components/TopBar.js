@@ -1,12 +1,13 @@
 'use client';
 import React, { useRef, useState } from 'react';
 import { TIME_WINDOWS } from '../services/filterService';
+import { projectDictionary } from '../utils/projectDictionary';
 
 const TimeWindowButton = ({ window, active, onClick, disabled }) => (
   <button
-    className={`px-4 py-2 rounded transition-all duration-300 ${
+    className={`px-3 py-1.5 rounded text-sm transition-all duration-300 ${
       active 
-        ? 'bg-blue-600 text-white transform scale-105' 
+        ? 'bg-blue-600 text-white' 
         : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
     } ${disabled ? 'cursor-not-allowed opacity-50' : ''}`}
     onClick={() => onClick(window)}
@@ -16,7 +17,6 @@ const TimeWindowButton = ({ window, active, onClick, disabled }) => (
   </button>
 );
 
-// Add preset ranges for historical mode
 const HISTORICAL_RANGES = {
   'Last Hour': { hours: 1 },
   'Last 6 Hours': { hours: 6 },
@@ -27,32 +27,48 @@ const HISTORICAL_RANGES = {
   'Custom Range': null
 };
 
+const STATUS_CODES = [
+  { value: 'all', label: 'All Logs', color: 'blue' },
+  { value: 'error', label: 'Error Logs', color: 'red' },
+  { value: 'error-free', label: 'Success Logs', color: 'green' },
+  { value: '200', label: '200', color: 'green' },
+  { value: '400', label: '400', color: 'yellow' },
+  { value: '500', label: '500', color: 'red' },
+];
+
 export default function TopBar({ filters, updateFilters, isLoading }) {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedRange, setSelectedRange] = useState('Custom Range');
   const startDateRef = useRef(null);
   const endDateRef = useRef(null);
 
+  const projects = [
+    'all',
+    'piyush',
+    'sneha',
+    'aditya',
+    'dhananjay',
+    'sejal',
+    'malvika',
+    'sanchari',
+    'akarsh',
+    'roshini'
+  ];
+
   const handleLiveModeToggle = () => {
     if (isTransitioning) return;
     setIsTransitioning(true);
-
     updateFilters({
       isLiveMode: !filters.isLiveMode,
       timeWindow: null,
       startDate: '',
       endDate: ''
     });
-
-    if (startDateRef.current) startDateRef.current.value = '';
-    if (endDateRef.current) endDateRef.current.value = '';
-
     setTimeout(() => setIsTransitioning(false), 300);
   };
 
   const handleTimeWindowClick = (window) => {
     if (!filters.isLiveMode || isTransitioning) return;
-    
     setIsTransitioning(true);
     updateFilters({
       timeWindow: filters.timeWindow === window ? null : window
@@ -83,78 +99,116 @@ export default function TopBar({ filters, updateFilters, isLoading }) {
 
     if (startDateRef.current) startDateRef.current.value = startDate.toISOString().slice(0, 16);
     if (endDateRef.current) endDateRef.current.value = endDate.toISOString().slice(0, 16);
-    
     setSelectedRange(rangeName);
   };
 
   return (
-    <div className="bg-gray-800 p-4 rounded-lg shadow-lg mb-6">
-      <div className="flex flex-wrap gap-4 items-center">
-        {/* Live Mode Toggle */}
-        <button
-          onClick={handleLiveModeToggle}
-          disabled={isTransitioning || isLoading}
-          className={`px-4 py-2 rounded-lg transition-all duration-300 ${
-            filters.isLiveMode 
-              ? 'bg-green-600 text-white' 
-              : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-          }`}
-        >
-          {filters.isLiveMode ? 'Live Mode' : 'Historical Mode'}
-        </button>
+    <div className="bg-gray-800 p-3 rounded-lg shadow-lg mb-4 flex">
+      <div className="flex flex-wrap items-center gap-6">
+        {/* Mode Toggle and Project Selection Group */}
+        <div className="flex items-center gap-3 min-w-fit">
+          <button
+            onClick={handleLiveModeToggle}
+            disabled={isTransitioning || isLoading}
+            className={`px-3 py-1.5 rounded text-sm font-medium transition-all duration-300 ${
+              filters.isLiveMode 
+                ? 'bg-green-600 text-white' 
+                : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+            }`}
+          >
+            {filters.isLiveMode ? 'Live Mode' : 'Historical'}
+          </button>
 
-        {/* Time Windows (visible only in live mode) */}
-        {filters.isLiveMode && (
-          <div className="flex gap-2">
-            {Object.keys(TIME_WINDOWS).map(window => (
-              <TimeWindowButton
-                key={window}
-                window={window}
-                active={filters.timeWindow === window}
-                onClick={handleTimeWindowClick}
-                disabled={isTransitioning || isLoading}
-              />
+          <select
+            value={filters.project}
+            onChange={(e) => updateFilters({ project: e.target.value })}
+            className="bg-gray-700 text-white px-3 py-1.5 rounded text-sm"
+            disabled={isLoading}
+          >
+            {projects.map(project => (
+              <option key={project} value={project}>
+                {projectDictionary[project].charAt(0).toUpperCase() + projectDictionary[project].slice(1)}
+              </option>
             ))}
-          </div>
-        )}
+          </select>
+        </div>
 
-        {/* Historical Mode Controls */}
-        {!filters.isLiveMode && (
-          <div className="flex flex-wrap gap-4">
-            <select
-              value={selectedRange}
-              onChange={(e) => handleRangeSelect(e.target.value)}
-              className="bg-gray-700 text-white px-4 py-2 rounded"
-            >
-              {Object.keys(HISTORICAL_RANGES).map(range => (
-                <option key={range} value={range}>{range}</option>
+        {/* Separator */}
+        <div className="h-6 w-px bg-gray-600"></div>
+
+        {/* Time Controls Group */}
+        <div className="flex items-center gap-3">
+          {filters.isLiveMode ? (
+            <div className="flex gap-2">
+              {Object.keys(TIME_WINDOWS).map(window => (
+                <TimeWindowButton
+                  key={window}
+                  window={window}
+                  active={filters.timeWindow === window}
+                  onClick={handleTimeWindowClick}
+                  disabled={isTransitioning || isLoading}
+                />
               ))}
-            </select>
-
-            <div className="flex gap-4">
-              <input
-                type="datetime-local"
-                ref={startDateRef}
-                onChange={(e) => {
-                  setSelectedRange('Custom Range');
-                  updateFilters({ startDate: e.target.value });
-                }}
-                className="bg-gray-700 text-white px-4 py-2 rounded"
-                disabled={isTransitioning || isLoading}
-              />
-              <input
-                type="datetime-local"
-                ref={endDateRef}
-                onChange={(e) => {
-                  setSelectedRange('Custom Range');
-                  updateFilters({ endDate: e.target.value });
-                }}
-                className="bg-gray-700 text-white px-4 py-2 rounded"
-                disabled={isTransitioning || isLoading}
-              />
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="flex items-center gap-3">
+              <select
+                value={selectedRange}
+                onChange={(e) => handleRangeSelect(e.target.value)}
+                className="bg-gray-700 text-white px-3 py-1.5 rounded text-sm"
+              >
+                {Object.keys(HISTORICAL_RANGES).map(range => (
+                  <option key={range} value={range}>{range}</option>
+                ))}
+              </select>
+
+              <div className="flex gap-2">
+                <input
+                  type="datetime-local"
+                  ref={startDateRef}
+                  onChange={(e) => {
+                    setSelectedRange('Custom Range');
+                    updateFilters({ startDate: e.target.value });
+                  }}
+                  className="bg-gray-700 text-white px-3 py-1.5 rounded text-sm"
+                  disabled={isTransitioning || isLoading}
+                />
+                <input
+                  type="datetime-local"
+                  ref={endDateRef}
+                  onChange={(e) => {
+                    setSelectedRange('Custom Range');
+                    updateFilters({ endDate: e.target.value });
+                  }}
+                  className="bg-gray-700 text-white px-3 py-1.5 rounded text-sm"
+                  disabled={isTransitioning || isLoading}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Separator */}
+        <div className="h-6 w-px bg-gray-600"></div>
+
+        {/* Status Code Filters Group */}
+        <div className="flex items-center gap-2">
+          {STATUS_CODES.map(({ value, label, color }) => (
+            <button
+              key={value}
+              onClick={() => updateFilters({ logType: value })}
+              disabled={isLoading}
+              className={`px-3 py-1.5 rounded text-sm transition-all duration-300 ${
+                filters.logType === value
+                  ? `bg-${color}-600 text-white`
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+              } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              title={label}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );
