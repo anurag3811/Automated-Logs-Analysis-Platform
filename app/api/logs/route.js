@@ -96,7 +96,7 @@ export async function GET(request) {
 
   try {
     let logs;
-    const allCollections = ['akarsh', 'sejal', 'sanchari', 'malvika', 'sneha', 'aditya', 'piyush', 'dhananjay', 'roshini','aalllogs'];
+    const allCollections = ['akarsh', 'sejal', 'sanchari', 'malvika', 'sneha', 'aditya', 'piyush', 'dhananjay', 'roshini'];
 
     const getModel = (colName) => {
       if (!allCollections.includes(colName)) {
