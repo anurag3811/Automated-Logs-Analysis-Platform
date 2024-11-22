@@ -52,6 +52,13 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
   const [isChartUpdating, setIsChartUpdating] = useState(false);
   const previousFilterRef = useRef(null);
 
+  // Initialize Plotly
+  useEffect(() => {
+    import('plotly.js-dist').then(plotly => {
+      setCharts({ Plotly: plotly.default });
+    });
+  }, []);
+
   // Define filterLogs function
   const filterLogs = useMemo(() => {
     if (!logs) return [];
@@ -104,54 +111,110 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
     return { pieData, lineData, timeRange: [oldestLog, newestLog] };
   }, [filterLogs]);
 
-  const updateCharts = async () => {
-    if (!charts.Plotly || !chartData || isChartUpdating) return;
+  // Reset charts when no data is available
+  const resetCharts = () => {
+    if (!charts.Plotly) return;
+    const { Plotly } = charts;
 
+    if (chartRefs.current.pieChart) {
+      Plotly.newPlot(chartRefs.current.pieChart, [{
+        values: [],
+        labels: [],
+        type: 'pie'
+      }], {
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: '#fff' }
+      });
+    }
+
+    if (chartRefs.current.lineChart) {
+      Plotly.newPlot(chartRefs.current.lineChart, [{
+        x: [],
+        y: [],
+        type: 'scatter',
+        mode: 'lines'
+      }], {
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: '#fff' }
+      });
+    }
+  };
+
+  const updateCharts = async () => {
+    if (!charts.Plotly || isChartUpdating || !logs) return;
     setIsChartUpdating(true);
     const { Plotly } = charts;
-    const { pieData, lineData, timeRange } = chartData;
 
     try {
-      await Promise.all([
-        Plotly.react(chartRefs.current.pieChart, [{
-          values: pieData.map(d => d.value),
-          labels: pieData.map(d => d.label),
-          type: 'pie',
-          marker: { colors: pieData.map(d => d.color) }
-        }], {
-          ...layout,
-          title: 'Logs Distribution by User'
-        }),
+      // Process data for pie chart
+      const logsByUser = logs.reduce((acc, log) => {
+        const projectName = getProjectName(log.Username) || 'Unknown';
+        acc[projectName] = (acc[projectName] || 0) + 1;
+        return acc;
+      }, {});
 
-        Plotly.react(chartRefs.current.lineChart, lineData, {
-          ...layout,
-          title: 'Logs Over Time by Project',
-          xaxis: {
-            title: 'Time',
-            type: 'date',
-            range: timeRange,
-            rangeselector: {
-              buttons: [
-                {count: 1, label: '1h', step: 'hour', stepmode: 'backward'},
-                {count: 6, label: '6h', step: 'hour', stepmode: 'backward'},
-                {count: 1, label: '1d', step: 'day', stepmode: 'backward'},
-                {count: 7, label: '1w', step: 'day', stepmode: 'backward'},
-                {step: 'all', label: 'All'}
-              ],
-              bgcolor: '#374151',
-              activecolor: '#000000',
-              bordercolor: '#4B5563',
-              font: {color: '#ffffff'}
-            },
-            rangeslider: {visible: true},
-            tickformat: '%b %d, %H:%M'
-          },
-          yaxis: { 
-            title: 'Number of Logs',
-            fixedrange: false
-          }
-        })
-      ]);
+      // Create pie chart data
+      const pieData = Object.entries(logsByUser).map(([project, count]) => ({
+        value: count,
+        label: project,
+        color: getColorForProject(project)
+      }));
+
+      // Update pie chart
+      await Plotly.newPlot(chartRefs.current.pieChart, [{
+        values: pieData.map(d => d.value),
+        labels: pieData.map(d => d.label),
+        type: 'pie',
+        marker: {
+          colors: pieData.map(d => d.color)
+        },
+        textinfo: 'label+percent'
+      }], {
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: '#fff' },
+        showlegend: true,
+        legend: { font: { color: '#fff' } }
+      });
+
+      // Process line chart data
+      const lineData = Object.keys(logsByUser).map(project => {
+        const projectLogs = logs.filter(log => getProjectName(log.Username) === project);
+        const data = projectLogs.reduce((acc, log) => {
+          const hour = new Date(log.Timestamp).setMinutes(0, 0, 0);
+          acc[hour] = (acc[hour] || 0) + 1;
+          return acc;
+        }, {});
+
+        return {
+          x: Object.keys(data).map(time => new Date(parseInt(time))),
+          y: Object.values(data),
+          type: 'scatter',
+          mode: 'lines',
+          name: project,
+          line: { color: getColorForProject(project) }
+        };
+      });
+
+      // Update line chart
+      await Plotly.newPlot(chartRefs.current.lineChart, lineData, {
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: '#fff' },
+        xaxis: {
+          showgrid: true,
+          gridcolor: 'rgba(255,255,255,0.1)'
+        },
+        yaxis: {
+          showgrid: true,
+          gridcolor: 'rgba(255,255,255,0.1)'
+        },
+        showlegend: true,
+        legend: { font: { color: '#fff' } }
+      });
+
     } catch (error) {
       console.error('Error updating charts:', error);
     } finally {
@@ -159,35 +222,30 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
     }
   };
 
-  // Initialize Plotly
-  useEffect(() => {
-    import('plotly.js-dist').then((Plotly) => {
-      setCharts({ Plotly: Plotly.default });
-    });
-  }, []);
-
   // Update charts when data changes
   useEffect(() => {
-    if (charts.Plotly && chartData) {
+    if (charts.Plotly) {
       updateCharts();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps 
-  }, [charts.Plotly, chartData]);
-
-  // Live mode updates
-  useEffect(() => {
-    if (charts.Plotly && isLiveMode) {
-      const interval = setInterval(updateCharts, 10000);
-      return () => clearInterval(interval);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps 
-  }, [isLiveMode, charts.Plotly, chartData]);
+  }, [charts.Plotly, logs]);
 
   const layout = {
     paper_bgcolor: 'rgba(0,0,0,0)',
     plot_bgcolor: 'rgba(0,0,0,0)',
     font: { color: '#ffffff' },
     margin: { t: 50, r: 0, l: 50, b: 50 }
+  };
+
+  // Add safety checks for CountUp values
+  const getTotalLogs = () => logs?.length || 0;
+  
+  const getErrorLogs = () => 
+    logs?.filter(log => log.Values && log.Values.iserrorlog === 1)?.length || 0;
+  
+  const getErrorRate = () => {
+    const totalLogs = getTotalLogs();
+    const errorLogs = getErrorLogs();
+    return totalLogs === 0 ? 0 : ((errorLogs / totalLogs) * 100);
   };
 
   return (
@@ -203,7 +261,11 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Total Logs</h3>
           <p className="text-3xl font-bold text-blue-400">
-            <CountUp end={filterLogs.length} duration={2} preserveValue={true} />
+            <CountUp 
+              end={getTotalLogs()} 
+              duration={2} 
+              preserveValue={true} 
+            />
           </p>
         </div>
 
@@ -211,7 +273,7 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
           <h3 className="text-xl font-bold mb-2">Error Logs</h3>
           <p className="text-3xl font-bold text-red-400">
             <CountUp 
-              end={filterLogs.filter(log => log.Values && log.Values.iserrorlog === 1).length} 
+              end={getErrorLogs()} 
               duration={2} 
               preserveValue={true} 
             />
@@ -222,7 +284,7 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
           <h3 className="text-xl font-bold mb-2">Error Rate</h3>
           <p className="text-3xl font-bold text-yellow-400">
             <CountUp 
-              end={((filterLogs.filter(log => log.Values && log.Values.iserrorlog === 1).length / filterLogs.length) * 100).toFixed(2)} 
+              end={getErrorRate()} 
               duration={2} 
               preserveValue={true} 
               decimals={2} 

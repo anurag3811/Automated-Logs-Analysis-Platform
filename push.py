@@ -40,6 +40,19 @@ def push_logs_to_mongodb():
                 "Log_id": 2,  # You can replace this with a dynamic value if needed
                 "Timestamp": current_time,
                 "Values": {
+                    "statuscode":400,
+                    "iserrorlog": 1,
+                    "whatfailed": "placeholder",
+                    "reason": "This is demo reason"
+                }
+            }
+
+            log3 = {
+                "Username": "Anurag",
+                "Log_id": 3,  # You can replace this with a dynamic value if needed
+                "Timestamp": current_time,
+                "Values": {
+                    "statuscode":500,
                     "iserrorlog": 1,
                     "whatfailed": "placeholder",
                     "reason": "This is demo reason"
@@ -47,7 +60,7 @@ def push_logs_to_mongodb():
             }
 
             # Insert logs into MongoDB
-            result = mongo.db.aalllogs.insert_many([log1, log2])
+            result = mongo.db.aalllogs.insert_many([log1, log2,log3])
             logging.info(f"Inserted {len(result.inserted_ids)} logs into MongoDB")
             logging.debug(f"Pushed logs: {log1}, {log2}")
 

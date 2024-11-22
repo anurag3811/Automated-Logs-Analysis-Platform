@@ -83,18 +83,12 @@ const SanchariDashboard = ({ logs }) => {
     errors: {}
   });
 
+  // Initialize Plotly
   useEffect(() => {
     import('plotly.js-dist').then(plotly => {
       setCharts({ Plotly: plotly.default });
     });
   }, []);
-
-  useEffect(() => {
-    if (charts.Plotly) {
-      updateCharts();
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps 
-  }, [charts.Plotly]);
 
   const updateCharts = async () => {
     if (!charts.Plotly || isChartUpdating) return;
@@ -108,109 +102,69 @@ const SanchariDashboard = ({ logs }) => {
         metrics.registrations.byType[type] || 0
       );
 
-      const regPieData = [{
-        values: regTypeValues,
-        labels: regTypeLabels,
-        type: 'pie',
-        marker: {
-          colors: regTypeLabels.map(type => colors.userTypes[type])
-        },
-        textinfo: 'label+percent',
-        hole: 0.4
-      }];
+      if (chartRefs.current.regPieChart) {
+        await Plotly.newPlot(chartRefs.current.regPieChart, [{
+          values: regTypeValues,
+          labels: regTypeLabels,
+          type: 'pie',
+          marker: {
+            colors: regTypeLabels.map(type => colors.userTypes[type])
+          },
+          textinfo: 'label+percent',
+          hole: 0.4
+        }], {
+          title: 'Registration Types Distribution',
+          paper_bgcolor: 'rgba(0,0,0,0)',
+          plot_bgcolor: 'rgba(0,0,0,0)',
+          font: { color: '#ffffff' },
+          showlegend: true,
+          legend: { font: { color: '#ffffff' } }
+        });
+      }
 
-      const regPieLayout = {
-        title: 'Registration Types Distribution',
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { color: '#ffffff' },
-        showlegend: true,
-        legend: {
-          x: 0,
-          y: 1,
-          font: { color: '#ffffff' }
-        }
-      };
-
-      // Age Groups Bar Chart
+      // Age Distribution Bar Chart
       const ageLabels = Object.keys(metrics.calculations.byAge);
       const ageValues = ageLabels.map(age => 
         metrics.calculations.byAge[age] || 0
       );
 
-      const ageBarData = [{
-        x: ageLabels,
-        y: ageValues,
-        type: 'bar',
-        marker: {
-          color: ageLabels.map(age => colors.ageGroups[age])
-        },
-        text: ageValues,
-        textposition: 'auto',
-      }];
+      if (chartRefs.current.ageBarChart) {
+        await Plotly.newPlot(chartRefs.current.ageBarChart, [{
+          x: ageLabels,
+          y: ageValues,
+          type: 'bar',
+          marker: {
+            color: Object.values(colors.ageGroups)
+          }
+        }], {
+          title: 'Age Distribution',
+          paper_bgcolor: 'rgba(0,0,0,0)',
+          plot_bgcolor: 'rgba(0,0,0,0)',
+          font: { color: '#ffffff' }
+        });
+      }
 
-      const ageBarLayout = {
-        title: 'Tax Calculations by Age Group',
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { color: '#ffffff' },
-        showlegend: false,
-        xaxis: {
-          tickangle: -45,
-          color: '#ffffff'
-        },
-        yaxis: {
-          color: '#ffffff'
-        }
-      };
-
-      // Appointment Slots Distribution
+      // Appointment Slots Bar Chart
       const slotLabels = Object.keys(metrics.appointments.bySlot);
       const slotValues = slotLabels.map(slot => 
         metrics.appointments.bySlot[slot] || 0
       );
 
-      const slotBarData = [{
-        x: slotLabels,
-        y: slotValues,
-        type: 'bar',
-        marker: {
-          color: slotLabels.map(slot => colors.slots[slot])
-        },
-        text: slotValues,
-        textposition: 'auto',
-      }];
-
-      const slotBarLayout = {
-        title: 'Appointments by Time Slot',
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { color: '#ffffff' },
-        showlegend: false,
-        xaxis: {
-          tickangle: -45,
-          color: '#ffffff'
-        },
-        yaxis: {
-          color: '#ffffff'
-        }
-      };
-
-      // Render all charts
-      await Plotly.newPlot(chartRefs.current.regPieChart, regPieData, regPieLayout, {
-        displayModeBar: false,
-        responsive: true
-      });
-
-      await Plotly.newPlot(chartRefs.current.ageBarChart, ageBarData, ageBarLayout, {
-        displayModeBar: false,
-        responsive: true
-      });
-
-      await Plotly.newPlot(chartRefs.current.slotBarChart, slotBarData, slotBarLayout, {
-        displayModeBar: false,
-        responsive: true
-      });
+      if (chartRefs.current.slotBarChart) {
+        await Plotly.newPlot(chartRefs.current.slotBarChart, [{
+          x: slotLabels,
+          y: slotValues,
+          type: 'bar',
+          marker: {
+            color: slotLabels.map(slot => colors.slots[slot])
+          }
+        }], {
+          title: 'Appointment Slots Distribution',
+          paper_bgcolor: 'rgba(0,0,0,0)',
+          plot_bgcolor: 'rgba(0,0,0,0)',
+          font: { color: '#ffffff' }
+        });
+      }
 
     } catch (error) {
       console.error('Error updating charts:', error);
@@ -219,13 +173,20 @@ const SanchariDashboard = ({ logs }) => {
     }
   };
 
+  // Update charts when data changes
+  useEffect(() => {
+    if (charts.Plotly) {
+      updateCharts();
+    }
+  }, [charts.Plotly, logs]);
+
   return (
     <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg">
       {/* Standard KPI Section */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Project Name:</h3>
-          <p className="text-3xl font-bold text-white">Tax Management System</p>
+          <p className="text-3xl font-bold text-white">Tax Calculation Portal</p>
         </div>
 
         <div className="bg-gray-800 p-4 rounded-lg shadow">
