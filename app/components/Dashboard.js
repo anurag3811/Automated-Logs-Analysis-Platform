@@ -93,7 +93,7 @@ const DashboardHeader = ({ project, logs, filters, updateFilters }) => {
 
 const Dashboard = ({ logs, baseFilteredLogs, filters, updateFilters, isLoading }) => {
   return (
-    <div className="flex flex-col h-[1272px] overflow-auto custom-scrollbar">
+    <div className="flex flex-col h-[1112px] overflow-auto custom-scrollbar">
       {isLoading ? (
         <div className="flex justify-center items-center h-screen">
           <LoadingSpinner />
