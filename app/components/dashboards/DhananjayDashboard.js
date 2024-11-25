@@ -170,7 +170,7 @@ const DhananjayDashboard = ({ logs }) => {
 
   return (
     <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg">
-      {/* Project Info & KPIs */}
+      {/* Project Info & KPIs
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Project Name:</h3>
@@ -205,7 +205,7 @@ const DhananjayDashboard = ({ logs }) => {
             />
           </p>
         </div>
-      </div>
+      </div> */}
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">

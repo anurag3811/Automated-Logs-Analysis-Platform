@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState, useRef } from 'react';
 import CountUp from 'react-countup';
+import '../LogsDisplay';
 
 // Define fixed colors for different aspects
 const colors = {
@@ -294,7 +295,7 @@ const MalvikaDashboard = ({ logs }) => {
 
       {/* Operation Details */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
+        <div className="bg-gray-800 p-4 rounded-lg shadow overflow-auto custom-scrollbar h-96">
           <h3 className="text-xl font-bold mb-4">Operation Messages</h3>
           <div className="space-y-2 max-h-[500px]">
             {Object.entries(
@@ -317,7 +318,7 @@ const MalvikaDashboard = ({ logs }) => {
           </div>
         </div>
 
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
+        <div className="bg-gray-800 p-4 rounded-lg shadow overflow-auto custom-scrollbar h-96">
           <h3 className="text-xl font-bold mb-2">Error Reasons</h3>
           <div className="space-y-2">
             {Object.entries(errorMetrics.errorReasons)

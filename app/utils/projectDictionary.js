@@ -1,11 +1,11 @@
 export const projectDictionary = {
   piyush: "Machine Logs",
-  sejal: "Renaming",
-  dhananjay: "Jira",
+  sejal: "File Upload and Bulk Renaming System ",
+  dhananjay: "Mini Jira",
   aditya: "Stock Market",
-  sneha: "Hospital",
-  malvika: "SCD2",
-  roshini: "ChatGPT",
+  sneha: "Hospitalization Status Monitoring System",
+  malvika: "SCD Type 2",
+  roshini: "SQL Query Generator",
   sanchari: "Taxmaster",
   akarsh: "ADF Replica",
   all: "All Projects"
@@ -24,7 +24,7 @@ export const projectMetadata = {
   },
   sneha: {
     title: projectDictionary['sneha'],
-    description: "Monitoring for data processing and ETL pipelines.",
+    description: "real-time hospitalization status monitoring system that provides a comprehensive dashboard for tracking hospital beds, patient admissions, discharges, and other critical metrics",
     icon: "/icons/business2.png"
   },
   aditya: {
@@ -34,17 +34,17 @@ export const projectMetadata = {
   },
   dhananjay: {
     title: projectDictionary['dhananjay'],
-    description: "Backend infrastructure and database performance tracking.",
+    description: "The project provides a web application with timesheet, leave and bug ticket functionalities, alerts, and a dashboard for managers to oversee business metrics and manage team, along with user authentication.",
     icon: "/icons/business2.png"
   },
   sejal: {
     title: projectDictionary['sejal'],
-    description: "Frontend application performance and user interactions.",
+    description: "File management application enables bulk renaming and uploading of files to various storage types, including Local, SharePoint, OneDrive, and ADLS, while providing options for naming rules and logging operations.",
     icon: "/icons/business2.png"
   },
   malvika: {
     title: projectDictionary['malvika'],
-    description: "Security and compliance monitoring system.",
+    description: "implement scd type 2 using fast api",
     icon: "/icons/business2.png"
   },
   sanchari: {
@@ -54,12 +54,12 @@ export const projectMetadata = {
   },
   akarsh: {
     title: projectDictionary['akarsh'],
-    description: "System health and performance metrics.",
+    description: "This project manages file uploads transformations and analysis connecting to multiple database , triggering actions based on events or schedules and incorporating API calls and machine learning regression",
     icon: "/icons/business2.png"
   },
   roshini: {
     title: projectDictionary['roshini'],
-    description: "Error tracking and debugging analytics.",
+    description: "To help SQL developers create well-structured SQL queries from their input or file uploads, explain SQL queries to provide insights, and correct invalid SQL queries.",
     icon: "/icons/business2.png"
   }
 };
