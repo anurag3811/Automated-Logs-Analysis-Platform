@@ -183,7 +183,7 @@ export default function TopBar({ filters, updateFilters, isLoading }) {
         </div>
 
         {/* Separator */}
-        <div className="h-6 w-px bg-gray-600"></div>
+        {/* <div className="h-6 w-px bg-gray-600"></div> */}
       </div>
     </div>
   );
