@@ -4,6 +4,7 @@ import LogsDisplay from './LogsDisplay';
 import Statistics from './Statistics';
 import LoadingSpinner from './LoadingSpinner';
 import { projectMetadata } from '../utils/projectDictionary';
+import Image from 'next/image';
 
 const DashboardHeader = ({ project, logs }) => {
   const metadata = projectMetadata[project] || projectMetadata.all;
@@ -11,7 +12,13 @@ const DashboardHeader = ({ project, logs }) => {
   return (
     <div className="bg-gray-800 rounded-lg p-6 mb-4 shadow-lg">
       <div className="flex items-center gap-4">
-        <span className="text-3xl">{metadata.icon}</span>
+        <Image
+            src={metadata.icon}
+            alt={`${metadata.title} icon`}
+            width={64}
+            height={64}
+            className="rounded-lg"
+          />
         <div>
           <h1 className="text-2xl font-bold text-white mb-2">
             {metadata.title}
