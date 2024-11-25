@@ -1,8 +1,5 @@
 // Time window definitions
 const TIME_WINDOWS = {
-  '1m': 1,
-  '2m': 2,
-  '3m': 3,
   '1h': 60,
   '6h': 360,
   '12h': 720,

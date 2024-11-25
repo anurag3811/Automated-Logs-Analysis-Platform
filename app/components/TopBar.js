@@ -2,6 +2,7 @@
 import React, { useRef, useState } from 'react';
 import { TIME_WINDOWS } from '../services/filterService';
 import { projectDictionary } from '../utils/projectDictionary';
+import Image from 'next/image';
 
 const TimeWindowButton = ({ window, active, onClick, disabled }) => (
   <button
@@ -106,6 +107,8 @@ export default function TopBar({ filters, updateFilters, isLoading }) {
     <div className="bg-gray-800 p-3 rounded-lg shadow-lg mb-4 flex">
       <div className="flex flex-wrap items-center gap-6">
         {/* Mode Toggle and Project Selection Group */}
+        <Image src={'/icons/research.png'} height={32} width={32} />
+        <div className='-ml-4 font-bold '>Log Analytics Platform</div>
         <div className="flex items-center gap-3 min-w-fit">
           <button
             onClick={handleLiveModeToggle}
@@ -137,7 +140,7 @@ export default function TopBar({ filters, updateFilters, isLoading }) {
         <div className="h-6 w-px bg-gray-600"></div>
 
         {/* Time Controls Group */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 -ml-4 -mr-4">
           {filters.isLiveMode ? (
             <div className="flex gap-2">
               {Object.keys(TIME_WINDOWS).map(window => (
@@ -170,7 +173,7 @@ export default function TopBar({ filters, updateFilters, isLoading }) {
                     setSelectedRange('Custom Range');
                     updateFilters({ startDate: e.target.value });
                   }}
-                  className="bg-gray-700 text-white px-3 py-1.5 rounded text-sm"
+                  className="bg-gray-700 text-white px-3 py-1.5 rounded text-sm w-32"
                   disabled={isTransitioning || isLoading}
                 />
                 <input
@@ -180,7 +183,7 @@ export default function TopBar({ filters, updateFilters, isLoading }) {
                     setSelectedRange('Custom Range');
                     updateFilters({ endDate: e.target.value });
                   }}
-                  className="bg-gray-700 text-white px-3 py-1.5 rounded text-sm"
+                  className="bg-gray-700 text-white px-3 py-1.5 rounded text-sm w-32"
                   disabled={isTransitioning || isLoading}
                 />
               </div>
