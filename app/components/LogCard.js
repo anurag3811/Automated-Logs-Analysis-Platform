@@ -31,13 +31,16 @@ const LogCard = ({ log, onClick }) => {
       onClick={onClick}
     >
       {/* Status Code Badge */}
-      <div 
-        className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-semibold text-white ${
-          getStatusBadgeColor(statusCode)
-        }`}
-      >
-        {statusCode || (isErrorLog ? '500' : '200')}
-      </div>
+      
+      {(log.Values?.statuscode || log.Values?.iserrorlog === 0) && (
+        <div 
+          className={`absolute top-2 right-2 px-2 py-1 rounded-full text-xs font-semibold text-white ${
+            getStatusBadgeColor(statusCode)
+          }`}
+        >
+          {log.Values?.statuscode || '200'}
+        </div>
+      )}
 
       <h3 className="text-lg font-semibold mb-2 text-white pr-16">
         {getProjectName(log.Username)}
