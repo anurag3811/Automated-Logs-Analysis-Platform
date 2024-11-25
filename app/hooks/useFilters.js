@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { applyFilters } from '../services/filterService';
+import { applyFilters, applyBaseFilters } from '../services/filterService';
 
 export const useFilters = (logs = []) => {
   const [filters, setFilters] = useState({
@@ -11,10 +11,15 @@ export const useFilters = (logs = []) => {
     isLiveMode: true
   });
 
-  // Memoized filtered logs
+  // Base filtered logs (only time and project filters)
+  const baseFilteredLogs = useMemo(() => {
+    return applyBaseFilters(logs, filters);
+  }, [logs, filters.timeWindow, filters.startDate, filters.endDate, filters.project, filters.isLiveMode]);
+
+  // Fully filtered logs (including status filters)
   const filteredLogs = useMemo(() => {
-    return applyFilters(logs, filters);
-  }, [logs, filters]);
+    return applyFilters(baseFilteredLogs, filters);
+  }, [baseFilteredLogs, filters.logType]);
 
   const updateFilters = (newFilters) => {
     setFilters(prev => ({
@@ -26,6 +31,7 @@ export const useFilters = (logs = []) => {
   return {
     filters,
     updateFilters,
+    baseFilteredLogs,
     filteredLogs
   };
 }; 

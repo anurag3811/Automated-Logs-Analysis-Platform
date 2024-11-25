@@ -23,6 +23,7 @@ export default function Home() {
   const {
     filters,
     updateFilters,
+    baseFilteredLogs,
     filteredLogs
   } = useFilters(allLogs);
 
@@ -39,6 +40,7 @@ export default function Home() {
       />
       <Dashboard 
         logs={filteredLogs}
+        baseFilteredLogs={baseFilteredLogs}
         filters={filters}
         updateFilters={updateFilters}
         isLoading={isDataLoading}

@@ -69,14 +69,13 @@ const filterByLogType = (logs, logType) => {
   }
 };
 
-// Composite filtering
-const applyFilters = (logs, filters) => {
+// Base filtering (time and project only)
+const applyBaseFilters = (logs, filters) => {
   const {
     timeWindow,
     startDate,
     endDate,
     project,
-    logType,
     isLiveMode
   } = filters;
 
@@ -92,10 +91,12 @@ const applyFilters = (logs, filters) => {
   // Apply project filter
   filteredLogs = filterByProject(filteredLogs, project);
 
-  // Apply log type filter
-  filteredLogs = filterByLogType(filteredLogs, logType);
-
   return filteredLogs;
+};
+
+// Full filtering (including status)
+const applyFilters = (logs, filters) => {
+  return filterByLogType(logs, filters.logType);
 };
 
 export {
@@ -104,5 +105,6 @@ export {
   filterByDateRange,
   filterByProject,
   filterByLogType,
+  applyBaseFilters,
   applyFilters
 }; 

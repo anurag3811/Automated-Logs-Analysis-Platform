@@ -28,15 +28,6 @@ const HISTORICAL_RANGES = {
   'Custom Range': null
 };
 
-const STATUS_CODES = [
-  { value: 'all', label: 'All Logs', color: 'blue' },
-  { value: 'error', label: 'Error Logs', color: 'red' },
-  { value: 'error-free', label: 'Success Logs', color: 'green' },
-  { value: '200', label: '200', color: 'green' },
-  { value: '400', label: '400', color: 'yellow' },
-  { value: '500', label: '500', color: 'red' },
-];
-
 export default function TopBar({ filters, updateFilters, isLoading }) {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [selectedRange, setSelectedRange] = useState('Custom Range');
@@ -193,25 +184,6 @@ export default function TopBar({ filters, updateFilters, isLoading }) {
 
         {/* Separator */}
         <div className="h-6 w-px bg-gray-600"></div>
-
-        {/* Status Code Filters Group */}
-        <div className="flex items-center gap-2">
-          {STATUS_CODES.map(({ value, label, color }) => (
-            <button
-              key={value}
-              onClick={() => updateFilters({ logType: value })}
-              disabled={isLoading}
-              className={`px-3 py-1.5 rounded text-sm transition-all duration-300 ${
-                filters.logType === value
-                  ? `bg-${color}-600 text-white`
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-              } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
-              title={label}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
       </div>
     </div>
   );
