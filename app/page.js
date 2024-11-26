@@ -44,7 +44,7 @@ export default function LandingPage() {
           />
           <FeatureCard 
             title="Advanced Analytics"
-            description="Comprehensive error tracking and performance metrics with visual insights"
+            description="Comprehensive error tracking and performance metrics with visual insights."
             icon="📈"
           />
         </div>
