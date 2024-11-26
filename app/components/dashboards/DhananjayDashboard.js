@@ -11,10 +11,18 @@ const colors = {
     'project': '#4BC0C0'       // Teal
   },
   leaveTypes: {
-    'sick': '#FF9F40',         // Orange
-    'casual': '#9966FF',       // Purple
-    'earned': '#FF99CC',       // Pink
-    'unpaid': '#FF6384'        // Red
+    '1': '#FF9F40',         // Orange - Sick Leave
+    '2': '#9966FF',         // Purple - Casual Leave
+    '3': '#FF99CC',         // Pink - Paid Leave
+  },
+  // Helper function to get leave type name
+  getLeaveTypeName: (id) => {
+    const leaveTypes = {
+      '1': 'Sick Leave',
+      '2': 'Casual Leave',
+      '3': 'Paid Leave'
+    };
+    return leaveTypes[id] || `Leave Type ${id}`;
   }
 };
 
@@ -109,15 +117,33 @@ const DhananjayDashboard = ({ logs }) => {
         hole: 0.4
       }];
 
-      // Leave Types Bar Chart
-      const leaveData = [{
-        x: Object.keys(metrics.leave.byType),
-        y: Object.values(metrics.leave.byType),
-        type: 'bar',
-        marker: {
-          color: Object.values(colors.leaveTypes)
+      // Leave Types Bar Chart with Legend
+      const leaveData = [
+        {
+          x: ['Leave Types'],
+          y: [metrics.leave.byType['1'] || 0],
+          name: 'Sick Leave',
+          type: 'bar',
+          marker: { color: colors.leaveTypes['1'] },
+          hovertemplate: 'Sick Leave: %{y} days<extra></extra>'
+        },
+        {
+          x: ['Leave Types'],
+          y: [metrics.leave.byType['2'] || 0],
+          name: 'Casual Leave',
+          type: 'bar',
+          marker: { color: colors.leaveTypes['2'] },
+          hovertemplate: 'Casual Leave: %{y} days<extra></extra>'
+        },
+        {
+          x: ['Leave Types'],
+          y: [metrics.leave.byType['3'] || 0],
+          name: 'Paid Leave',
+          type: 'bar',
+          marker: { color: colors.leaveTypes['3'] },
+          hovertemplate: 'Paid Leave: %{y} days<extra></extra>'
         }
-      }];
+      ];
 
       // Tickets Status
       const ticketData = [{
@@ -130,19 +156,55 @@ const DhananjayDashboard = ({ logs }) => {
         hole: 0.4
       }];
 
-      const layout = {
+      // Create separate layouts for each chart
+      const baseLayout = {
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
         font: { color: '#ffffff' },
         showlegend: true,
-        legend: { font: { color: '#ffffff' } },
-        margin: { t: 30, r: 40, l: 40, b: 30 }
+        legend: { 
+          font: { color: '#ffffff' },
+          orientation: 'h',     // horizontal legend
+          yanchor: 'bottom',   // anchor to bottom
+          y: -0.3,            // position below chart
+          xanchor: 'center',   // center horizontally
+          x: 0.5              // center position
+        },
+        margin: { t: 30, r: 40, l: 40, b: 80 }  // increased bottom margin for legend
+      };
+
+      const leaveLayout = {
+        ...baseLayout,
+        barmode: 'group',  // Group bars side by side
+        yaxis: {
+          title: 'Number of Days',
+          titlefont: { color: '#ffffff' },
+          gridcolor: 'rgba(255,255,255,0.1)',
+          tickfont: { color: '#ffffff' }
+        },
+        xaxis: {
+          tickfont: { color: '#ffffff' },
+          showticklabels: false  // Hide x-axis labels since we have the legend
+        },
+        legend: {
+          font: { color: '#ffffff', size: 12 },
+          orientation: 'h',
+          yanchor: 'bottom',
+          y: -0.3,
+          xanchor: 'center',
+          x: 0.5,
+          bgcolor: 'rgba(0,0,0,0)',
+          bordercolor: 'rgba(255,255,255,0.2)',
+          borderwidth: 1,
+          traceorder: 'normal'
+        },
+        margin: { t: 30, r: 40, l: 60, b: 80 }
       };
 
       await Promise.all([
-        Plotly.newPlot(chartRefs.current.activityPie, activityData, layout),
-        Plotly.newPlot(chartRefs.current.leaveBar, leaveData, layout),
-        Plotly.newPlot(chartRefs.current.ticketPie, ticketData, layout)
+        Plotly.newPlot(chartRefs.current.activityPie, activityData, baseLayout),
+        Plotly.newPlot(chartRefs.current.leaveBar, leaveData, leaveLayout),
+        Plotly.newPlot(chartRefs.current.ticketPie, ticketData, baseLayout)
       ]);
 
     } catch (error) {
@@ -211,15 +273,15 @@ const DhananjayDashboard = ({ logs }) => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Activity Distribution</h3>
-          <div ref={el => chartRefs.current.activityPie = el} style={{width: "100%", height: "300px"}}></div>
+          <div ref={el => chartRefs.current.activityPie = el} style={{width: "100%", height: "400px"}}></div>
         </div>
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Leave Types</h3>
-          <div ref={el => chartRefs.current.leaveBar = el} style={{width: "100%", height: "300px"}}></div>
+          <div ref={el => chartRefs.current.leaveBar = el} style={{width: "100%", height: "400px"}}></div>
         </div>
         <div className="bg-gray-800 p-4 rounded-lg shadow">
           <h3 className="text-xl font-bold mb-2">Ticket Status</h3>
-          <div ref={el => chartRefs.current.ticketPie = el} style={{width: "100%", height: "300px"}}></div>
+          <div ref={el => chartRefs.current.ticketPie = el} style={{width: "100%", height: "400px"}}></div>
         </div>
       </div>
 

@@ -160,26 +160,90 @@ const PiyushDashboard = ({ logs }) => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-bold mb-2">Most Failing Machine</h3>
+        <div className="bg-gray-800 p-6 rounded-lg shadow hover:bg-gray-750 transition-all duration-300">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h3 className="text-xl font-bold mb-1">Most Failing Machine</h3>
+              <p className="text-sm text-gray-400">Current reporting period</p>
+            </div>
+            <div className="p-2 bg-red-500/10 rounded-lg">
+              <svg 
+                className="w-6 h-6 text-red-500" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" 
+                />
+              </svg>
+            </div>
+          </div>
+
           {mostFailingMachine[0] ? (
-            <>
-              <p>Plant ID: <span className="font-bold text-green-400">{mostFailingMachine[0].split('-')[0]}</span></p>
-              <p>Machine ID: <span className="font-bold text-green-400">{mostFailingMachine[0].split('-')[1]}</span></p>
-              <p>Number of Failures: <span className="font-bold text-red-400">{mostFailingMachine[1].errors}</span></p>
-            </>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="bg-gray-700 p-3 rounded">
+                <p className="text-sm text-gray-400">Plant ID</p>
+                <p className="text-lg font-bold text-green-400">
+                  {mostFailingMachine[0].split('-')[0]}
+                </p>
+              </div>
+              <div className="bg-gray-700 p-3 rounded">
+                <p className="text-sm text-gray-400">Machine ID</p>
+                <p className="text-lg font-bold text-green-400">
+                  {mostFailingMachine[0].split('-')[1]}
+                </p>
+              </div>
+              <div className="bg-gray-700 p-3 rounded col-span-2">
+                <p className="text-sm text-gray-400">Total Failures</p>
+                <div className="flex items-baseline gap-2">
+                  <p className="text-2xl font-bold text-red-400">
+                    {mostFailingMachine[1].errors}
+                  </p>
+                  <span className="text-sm text-red-400">incidents</span>
+                </div>
+              </div>
+            </div>
           ) : (
-            <p>No machine failures recorded</p>
+            <div className="flex items-center justify-center h-32 text-gray-500">
+              <p>No machine failures recorded</p>
+            </div>
           )}
         </div>
 
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-bold mb-2">Failures by Parameter</h3>
+        <div className="bg-gray-800 p-6 rounded-lg shadow hover:bg-gray-750 transition-all duration-300">
+          <div className="flex items-start justify-between mb-4">
+            <div>
+              <h3 className="text-xl font-bold mb-1">Failures by Parameter</h3>
+              <p className="text-sm text-gray-400">Current reporting period</p>
+            </div>
+            <div className="p-2 bg-blue-500/10 rounded-lg">
+              <svg 
+                className="w-6 h-6 text-blue-500" 
+                fill="none" 
+                stroke="currentColor" 
+                viewBox="0 0 24 24"
+              >
+                <path 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round" 
+                  strokeWidth={2} 
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" 
+                />
+              </svg>
+            </div>
+          </div>
+
           <div className="grid grid-cols-2 gap-2">
             {Object.entries(failuresByParameter).map(([parameter, count]) => (
-              <div key={parameter} className="bg-gray-700 p-2 rounded">
-                <p className="font-bold">{parameter}</p>
-                <p className="text-red-400">{count} failures</p>
+              <div key={parameter} className="bg-gray-700 p-3 rounded">
+                <p className="text-sm text-gray-400">{parameter}</p>
+                <p className="text-lg font-bold" style={{ color: failureColors[parameter] || '#FF9F40' }}>
+                  {count} failures
+                </p>
               </div>
             ))}
           </div>

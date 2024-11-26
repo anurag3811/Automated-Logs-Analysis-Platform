@@ -2,7 +2,7 @@ export const projectDictionary = {
   piyush: "DATAFLOW360",
   sejal: "File Upload and Bulk Renaming System ",
   dhananjay: "Mini Jira",
-  aditya: "Stock Market",
+  aditya: "Stock Trading Application",
   sneha: "Hospitalization Status Monitoring System",
   malvika: "SCD Type 2",
   roshini: "SQL Query Generator",
@@ -15,7 +15,7 @@ export const projectMetadata = {
   all: {
     title: projectDictionary['all'],
     description: "Comprehensive view of all project logs and analytics across the platform.",
-    icon: "/icons/business2.png"
+    icon: "/icons/data.png"
   },
   piyush: {
     title: projectDictionary['piyush'],
@@ -29,8 +29,8 @@ export const projectMetadata = {
   },
   aditya: {
     title: projectDictionary['aditya'],
-    description: "API gateway and service integration metrics.",
-    icon: "/icons/business2.png"
+    description: "Users can see the charts of financial instruments and also perform buy/sell.",
+    icon: "/icons/stock-market.png"
   },
   dhananjay: {
     title: projectDictionary['dhananjay'],
@@ -40,7 +40,8 @@ export const projectMetadata = {
   sejal: {
     title: projectDictionary['sejal'],
     description: "File management application enables bulk renaming and uploading of files to various storage types, including Local, SharePoint, OneDrive, and ADLS, while providing options for naming rules and logging operations.",
-    icon: "/icons/folder-management"
+    icon: "/icons/folder-management.png"
+
   },
   malvika: {
     title: projectDictionary['malvika'],
@@ -49,8 +50,8 @@ export const projectMetadata = {
   },
   sanchari: {
     title: projectDictionary['sanchari'],
-    description: "User experience and session analytics.",
-    icon: "/icons/business2.png"
+    description: "A online web portal for calculating tax based on individual's income.",
+    icon: "/icons/tax.png"
   },
   akarsh: {
     title: projectDictionary['akarsh'],
