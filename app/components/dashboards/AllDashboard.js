@@ -46,6 +46,41 @@ function getColorForProject(projectName) {
 
 }
 
+// Add this CSS class to your component or global styles
+const styles = `
+  .dashboard-title {
+    position: relative;
+    display: inline-block;
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    letter-spacing: 0.05em;
+  }
+
+  .dashboard-title::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6 0%, #1d4ed8 100%);
+    border-radius: 2px;
+  }
+
+  .dashboard-title-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .dashboard-title-icon {
+    color: #3b82f6;
+    opacity: 0.8;
+  }
+`;
+
 const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
   const [charts, setCharts] = useState({});
   const chartRefs = useRef({});
@@ -167,16 +202,61 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
         values: pieData.map(d => d.value),
         labels: pieData.map(d => d.label),
         type: 'pie',
+        hole: 0.5,
         marker: {
           colors: pieData.map(d => d.color)
         },
-        textinfo: 'label+percent'
+        textinfo: 'percent',
+        textposition: 'inside',
+        automargin: true,
+        showlegend: true,
+        hoverinfo: 'label+value+percent',
+        hovertemplate: '<b>%{label}</b><br>Logs: %{value}<br>Percentage: %{percent}<extra></extra>',
+        textfont: {
+          size: 11,
+          color: '#ffffff',
+          family: 'Arial'
+        }
       }], {
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { color: '#fff' },
+        font: { 
+          color: '#fff',
+          size: 12,
+          family: 'Arial'
+        },
         showlegend: true,
-        legend: { font: { color: '#fff' } }
+        legend: { 
+          font: { 
+            color: '#fff',
+            size: 12
+          },
+          orientation: 'v',
+          yanchor: 'middle',
+          y: 0.5,
+          xanchor: 'left',
+          x: 1.1,
+          bgcolor: 'rgba(0,0,0,0)',
+          bordercolor: 'rgba(255,255,255,0.1)',
+          borderwidth: 1
+        },
+        margin: { 
+          t: 40,
+          r: 200,
+          l: 40,
+          b: 40
+        },
+        annotations: [{
+          text: 'Project<br>Distribution',
+          showarrow: false,
+          font: {
+            size: 16,
+            color: '#ffffff',
+            family: 'Arial'
+          },
+          x: 0.5,
+          y: 0.5
+        }]
       });
 
       // Process line chart data
@@ -249,18 +329,12 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
   };
 
   return (
-    <div className="bg-gray-900 text-white p-6 pt-0 rounded-lg shadow-lg mt-4">
-
-      {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-bold mb-2">Project Name:</h3>
-          <p className="text-3xl font-bold text-white">
-            {'All Projects'}
-          </p>
-        </div>
-
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-bold mb-2">Total Logs</h3>
+    <div className="bg-gray-900 text-white p-6 rounded-lg shadow-lg">
+      <style>{styles}</style>
+      {/* Stats Row */}
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md border border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-400 mb-1">Total Logs</h3>
           <p className="text-3xl font-bold text-blue-400">
             <CountUp 
               end={getTotalLogs()} 
@@ -270,8 +344,8 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
           </p>
         </div>
 
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-bold mb-2">Error Logs</h3>
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md border border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-400 mb-1">Error Logs</h3>
           <p className="text-3xl font-bold text-red-400">
             <CountUp 
               end={getErrorLogs()} 
@@ -281,8 +355,8 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
           </p>
         </div>
 
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-          <h3 className="text-xl font-bold mb-2">Error Rate</h3>
+        <div className="bg-gray-800 p-4 rounded-lg shadow-md border border-gray-700">
+          <h3 className="text-lg font-semibold text-gray-400 mb-1">Error Rate</h3>
           <p className="text-3xl font-bold text-yellow-400">
             <CountUp 
               end={getErrorRate()} 
@@ -295,14 +369,67 @@ const AllDashboard = ({ logs, isLiveMode, lastUpdateTime }) => {
         </div>
       </div> */}
 
-      <div>
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-          <div ref={el => chartRefs.current.pieChart = el} style={{width: "100%", height: "400px"}}></div>
+      {/* Charts Grid */}
+      <div className="grid grid-row-1 md:grid-row-2 gap-6">
+        {/* Project Distribution Chart */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow-md border border-gray-700">
+          <div className="dashboard-title-container">
+            <h2 className="dashboard-title">
+              Project Distribution
+            </h2>
+            <svg 
+              className="dashboard-title-icon w-5 h-5" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"
+              />
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"
+              />
+            </svg>
+          </div>
+          <div ref={el => chartRefs.current.pieChart = el} 
+               className="w-full h-[400px]" />
         </div>
-        <div className="bg-gray-800 p-4 rounded-lg shadow">
-          <div ref={el => chartRefs.current.lineChart = el} style={{width: "100%", height: "400px"}}></div>
+
+        {/* Activity Timeline */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow-md border border-gray-700">
+          <div className="dashboard-title-container">
+            <h2 className="dashboard-title">
+              Activity Timeline
+            </h2>
+            <svg 
+              className="dashboard-title-icon w-5 h-5" 
+              fill="none" 
+              stroke="currentColor" 
+              viewBox="0 0 24 24"
+            >
+              <path 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                strokeWidth={2} 
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+              />
+            </svg>
+          </div>
+          <div ref={el => chartRefs.current.lineChart = el} 
+               className="w-full h-[400px]" />
         </div>
       </div>
+
+      {/* Last Update Time
+      <div className="mt-4 text-right text-sm text-gray-400">
+        Last updated: {new Date(lastUpdateTime).toLocaleString()}
+      </div> */}
     </div>
   );
 };

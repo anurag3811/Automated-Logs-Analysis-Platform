@@ -12,7 +12,12 @@ const colors = {
     'Format Activity': '#FF9F40',        // Orange
     'Copy Data Activity': '#9966FF',     // Purple
     'API Activity': '#FF99CC',           // Pink
-    'ML Regression Activity': '#99FF99'  // Light Green
+    'ML Regression Activity': '#99FF99',  // Light Green
+    'Jupyter Notebook Activity': '#66B2FF' // Add default color for Jupyter
+  },
+  // Helper function to get color with fallback
+  getActivityColor: (activity) => {
+    return colors.activities[activity] || '#66B2FF'; // Default blue if no color is defined
   }
 };
 
@@ -75,7 +80,7 @@ const AkarshDashboard = ({ logs }) => {
         type: 'pie',
         hole: 0.4,
         marker: {
-          colors: Object.keys(activityMetrics.activityTypes).map(type => colors.activities[type])
+          colors: Object.keys(activityMetrics.activityTypes).map(type => colors.getActivityColor(type))
         }
       }];
 
@@ -85,7 +90,7 @@ const AkarshDashboard = ({ logs }) => {
         y: Object.values(successRates),
         type: 'bar',
         marker: {
-          color: Object.keys(successRates).map(activity => colors.activities[activity])
+          color: Object.keys(successRates).map(activity => colors.getActivityColor(activity))
         }
       }];
 
